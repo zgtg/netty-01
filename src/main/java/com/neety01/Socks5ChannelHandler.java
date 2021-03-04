@@ -35,6 +35,7 @@ public class Socks5ChannelHandler extends ChannelInboundHandlerAdapter {
             handleConnection(ctx, byteBuf);
         } else {// 转发请求
             byte[] reqBytes = new byte[byteBuf.readableBytes()];
+            byteBuf.writeBytes(reqBytes, 0, reqBytes.length);
 
             destChannel.writeAndFlush(byteBuf.retainedDuplicate());
         }
@@ -123,14 +124,18 @@ public class Socks5ChannelHandler extends ChannelInboundHandlerAdapter {
                     respBuf.writeByte(0x00);
                     respBuf.writeByte(rsv);
                     respBuf.writeByte(0x01);
-                    respBuf.writeByte(127);
-                    respBuf.writeByte(0);
-                    respBuf.writeByte(0);
-                    respBuf.writeByte(1);
-                    respBuf.writeShort(((InetSocketAddress)ctx.channel().localAddress()).getPort());
+                    respBuf.writeByte(0x7f);
+                    respBuf.writeByte(0x00);
+                    respBuf.writeByte(0x00);
+                    respBuf.writeByte(0x01);
+                    respBuf.writeShort(((short)((InetSocketAddress)ctx.channel().localAddress()).getPort()));
                     System.out.println("建立连接成功");
 
                     ctx.channel().attr(attr).set(4);
+
+                    byte[] tmpm = new byte[respBuf.readableBytes()];
+                    respBuf.getBytes(0, tmpm);
+                    System.out.println(new String(tmpm));
                     ctx.writeAndFlush(respBuf);
                 } else {
                     System.out.println("建立连接失败");
