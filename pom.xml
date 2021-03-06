@@ -29,7 +29,13 @@
     <dependency>
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
-      <version>4.1.59.Final</version>
+      <version>4.1.38.Final</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.30</version>
     </dependency>
   </dependencies>
 
